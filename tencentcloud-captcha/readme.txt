@@ -24,7 +24,7 @@ License URI:http://www.apache.org/licenses/LICENSE-2.0
 
 == Installation ==
 
-* 1、把tencentcloud-plugin-captcha文件夹上传到/wp-content/plugins/目录下<br />
+* 1、把tencentcloud-captcha文件夹上传到/wp-content/plugins/目录下<br />
 * 2、在后台插件列表中激活腾讯云验证码插件<br />
 * 3、在"设置""菜单中输入腾讯云验证码相关参数信息<br />
 * 4、设置可以参考：https://www.tenxun.com/2196.html

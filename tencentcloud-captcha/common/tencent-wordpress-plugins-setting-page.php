@@ -24,8 +24,7 @@ function tencent_wordpress_plugin_common_page() {
     $tencent_plugins = TencentWordpressPluginsSettingActions::getTencentWordpressPluggins();
     ?>
     <!--add style file-->
-    <link rel="stylesheet" type="text/css" href="<?php echo TENCENT_WORDPRESS_PLUGINS_COMMON_CSS_URL; ?>bootstrap.min.css">
-    <style>
+        <style>
         .dashicons {
             vertical-align: middle;
             position: relative;

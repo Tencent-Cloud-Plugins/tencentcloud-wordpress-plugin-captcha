@@ -63,7 +63,7 @@ class TencentCloudCaptchaActions{
             if ($codeFree == '1') {
                 $captchaAppId = $tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
             } else {
-                $captchaAppId = esc_attr($tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID])
+                $captchaAppId = sanitize_text_field($tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID])
                     ?: $tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
             }
             echo '<p>
@@ -91,7 +91,7 @@ class TencentCloudCaptchaActions{
             if ($codeFree == '1') {
                 $codAppId = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
             } else {
-                $codAppId = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
+                $codAppId = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
             }
             echo '<p>
             <label for="codeVerifyButton">我不是人机</label>
@@ -119,7 +119,7 @@ class TencentCloudCaptchaActions{
             if ($codeFree == '1') {
                 $codAppId = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
             } else {
-                $codAppId = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
+                $codAppId = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
             }
             $submit_button = '<p>
             <input type="button" name="codeVerifyCommentButton" id="codeVerifyButton" data-appid="' . $codAppId . '" class="button" value="人机验证" >
@@ -144,7 +144,7 @@ class TencentCloudCaptchaActions{
             if ($codeFree == '1') {
                 $codAppId = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
             } else {
-                $codAppId = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
+                $codAppId = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
             }
             echo '<p>
             <label for="codeVerifyButton">我不是人机</label>
@@ -161,14 +161,15 @@ class TencentCloudCaptchaActions{
      */
     public function tencent_wordpress_captcha_pluginSettingPage(){
         TencentWordpressPluginsSettingActions::tcwpAddTencentWordpressCommonSettingPage();
-        add_submenu_page('TencentWordpressPluginsCommonSettingPage','验证码','验证码', 'manage_options', 'tencent_wordpress_plugin_captcha', array('TencentCloudCaptchaActions', 'tencent_wordpress_captcha_SettingPage'));
+        $pagehook = add_submenu_page('TencentWordpressPluginsCommonSettingPage','验证码','验证码', 'manage_options', 'tencent_wordpress_plugin_captcha', array('TencentCloudCaptchaActions', 'tencent_wordpress_captcha_SettingPage'));
+        add_action( 'admin_print_styles-'.$pagehook, array(new TencentCloudCaptchaActions(), 'tencent_wordpress_captcha_loadCssForPage'));
     }
 
     /**
      * 插件配置信息操作页面
      */
     public static function tencent_wordpress_captcha_SettingPage(){
-        include TENCENT_WORDPRESS_CAPTCHA_DIR . 'tencentcloud-plugin-captcha-setting-page.php';
+        include TENCENT_WORDPRESS_CAPTCHA_DIR . 'tencentcloud-captcha-setting-page.php';
     }
 
     /**
@@ -178,7 +179,7 @@ class TencentCloudCaptchaActions{
      * @return mixed
      */
     public function tencent_wordpress_captcha_pluginSettingPageLinkButton($links, $file){
-        if ($file == plugin_basename(TENCENT_WORDPRESS_CAPTCHA_DIR . 'tencentcloud-plugin-captcha.php')) {
+        if ($file == plugin_basename(TENCENT_WORDPRESS_CAPTCHA_DIR . 'tencentcloud-captcha.php')) {
             $links[] = '<a href="admin.php?page=tencent_wordpress_plugin_captcha">设置</a>';
         }
 
@@ -195,6 +196,10 @@ class TencentCloudCaptchaActions{
             wp_register_script('TCaptcha', 'https://ssl.captcha.qq.com/TCaptcha.js', array('jquery'), '2.1', true);
             wp_enqueue_script('TCaptcha');
         }
+    }
+
+    public function tencent_wordpress_captcha_loadCssForPage(){
+        wp_enqueue_style('codeVerify_admin_css',TENCENT_WORDPRESS_CAPTCHA_CSS_DIR.'bootstrap.min.css');
     }
 
     /**
@@ -237,10 +242,10 @@ class TencentCloudCaptchaActions{
             }
         }
         if (empty($codeAppId)) {
-            return 'Code APP Id未填写.';
+            return 'Captcha App Id未填写.';
         }
         if (empty($codeSecretKey)) {
-            return 'Code Secret Key未填写.';
+            return 'Captcha App Secret Key未填写.';
         }
         if ($codeFree == '2') {
             if ((empty($registerAppId) && !empty($registerAppKey)) || (!empty($registerAppId) && empty($registerAppKey))) {
@@ -264,24 +269,24 @@ class TencentCloudCaptchaActions{
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('msg' => '当前用户无权限.'));
         }
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_ID] = esc_attr($_POST['secret_id']);
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_KEY] = esc_attr($_POST['secret_key']);
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID] = esc_attr($_POST['codeVerify_option_codeAppId']);
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY] = esc_attr($_POST['codeVerify_option_codeSecretKey']);
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_NEED_CODE] = esc_attr($_POST['registerNeedCode']);
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_NEED_CODE] = esc_attr($_POST['commentNeedCode']);
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_LOGIN_NEED_CODE] = esc_attr($_POST['loginNeedCode']);
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_NEED_CODE] = esc_attr($_POST['lostpasswordNeedCode']);
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_CODE_FREE] = esc_attr($_POST['codeFree']);
-        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_CUSTOM] = esc_attr($_POST['secretCustom']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_ID] = sanitize_text_field($_POST['secret_id']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_KEY] = sanitize_text_field($_POST['secret_key']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID] = sanitize_text_field($_POST['codeVerify_option_codeAppId']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY] = sanitize_text_field($_POST['codeVerify_option_codeSecretKey']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_NEED_CODE] = sanitize_text_field($_POST['registerNeedCode']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_NEED_CODE] = sanitize_text_field($_POST['commentNeedCode']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_LOGIN_NEED_CODE] = sanitize_text_field($_POST['loginNeedCode']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_NEED_CODE] = sanitize_text_field($_POST['lostpasswordNeedCode']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_CODE_FREE] = sanitize_text_field($_POST['codeFree']);
+        $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_CUSTOM] = sanitize_text_field($_POST['secretCustom']);
         $CodeVerifySettings['activation'] = true;
         if ($CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_CODE_FREE] == 2) {
-            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID] = esc_attr($_POST['registerCodeAppId']);
-            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_KEY] = esc_attr($_POST['registerCodeKey']);
-            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_ID] = esc_attr($_POST['commentCodeAppId']);
-            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_KEY] = esc_attr($_POST['commentCodeKey']);
-            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_ID] = esc_attr($_POST['lostpasswordCodeAppId']);
-            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_KEY] = esc_attr($_POST['lostpasswordCodeKey']);
+            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID] = sanitize_text_field($_POST['registerCodeAppId']);
+            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_KEY] = sanitize_text_field($_POST['registerCodeKey']);
+            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_ID] = sanitize_text_field($_POST['commentCodeAppId']);
+            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_KEY] = sanitize_text_field($_POST['commentCodeKey']);
+            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_ID] = sanitize_text_field($_POST['lostpasswordCodeAppId']);
+            $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_KEY] = sanitize_text_field($_POST['lostpasswordCodeKey']);
         } else {
             $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID] = '';
             $CodeVerifySettings[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_KEY] = '';
@@ -319,8 +324,8 @@ class TencentCloudCaptchaActions{
             $CodeVerifyOptions = get_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS);
             $loginNeedCode = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_LOGIN_NEED_CODE];
             if ($loginNeedCode == '2') {
-                $ticket = $_POST['codeVerifyTicket'];
-                $randStr = $_POST['codeVerifyRandstr'];
+                $ticket = sanitize_text_field($_POST['codeVerifyTicket']);
+                $randStr = sanitize_text_field($_POST['codeVerifyRandstr']);
                 if (empty($ticket) || empty($randStr)) {
                     return new WP_Error(
                         'invalid_CodeVerify',
@@ -331,8 +336,8 @@ class TencentCloudCaptchaActions{
                 $codeAppId = '';
                 $codeAppKey = '';
                 if ($codeFree == '2') {
-                    $codeAppId = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
-                    $codeAppKey = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_KEY]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
+                    $codeAppId = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
+                    $codeAppKey = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_KEY]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
                 } else {
                     $codeAppId = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
                     $codeAppKey = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
@@ -369,8 +374,8 @@ class TencentCloudCaptchaActions{
             $CodeVerifyOptions = get_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS);
             $registerNeedCode = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_NEED_CODE];
             if ($registerNeedCode == '2') {
-                $ticket = $_POST['codeVerifyTicket'];
-                $randStr = $_POST['codeVerifyRandstr'];
+                $ticket = sanitize_text_field($_POST['codeVerifyTicket']);
+                $randStr = sanitize_text_field($_POST['codeVerifyRandstr']);
                 if (empty($ticket) || empty($randStr)) {
                     $errors->add('未通过人机验证.', __('未通过人机验证.', 'wpcaptchadomain'));
                     return $errors;
@@ -380,8 +385,8 @@ class TencentCloudCaptchaActions{
                 $codeAppId = '';
                 $codeAppKey = '';
                 if ($codeFree == '2') {
-                    $codeAppId = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
-                    $codeAppKey = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_KEY]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
+                    $codeAppId = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
+                    $codeAppKey = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_KEY]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
                 } else {
                     $codeAppId = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
                     $codeAppKey = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
@@ -409,8 +414,8 @@ class TencentCloudCaptchaActions{
             $CodeVerifyOptions = get_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS);
             $lostpasswordNeedCode = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_NEED_CODE];
             if ($lostpasswordNeedCode == '2') {
-                $ticket = $_POST['codeVerifyTicket'];
-                $randStr = $_POST['codeVerifyRandstr'];
+                $ticket = sanitize_text_field($_POST['codeVerifyTicket']);
+                $randStr = sanitize_text_field($_POST['codeVerifyRandstr']);
                 if (empty($ticket) || empty($randStr)) {
                     $error = new WP_Error(
                         'invalid_CodeVerify',
@@ -422,8 +427,8 @@ class TencentCloudCaptchaActions{
                 $codeAppId = '';
                 $codeAppKey = '';
                 if ($codeFree == '2') {
-                    $codeAppId = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
-                    $codeAppKey = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_KEY]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
+                    $codeAppId = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
+                    $codeAppKey = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_KEY]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
                 } else {
                     $codeAppId = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
                     $codeAppKey = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
@@ -454,8 +459,8 @@ class TencentCloudCaptchaActions{
         $CodeVerifyOptions = get_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS);
         $commentNeedCode = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_NEED_CODE];
         if ($commentNeedCode == '2') {
-            $ticket = $_POST['codeVerifyTicket'];
-            $randStr = $_POST['codeVerifyRandstr'];
+            $ticket = sanitize_text_field($_POST['codeVerifyTicket']);
+            $randStr = sanitize_text_field($_POST['codeVerifyRandstr']);
             if (empty($ticket) || empty($randStr)) {
                 $error = new WP_Error(
                     'need_authenticated_code',
@@ -468,8 +473,8 @@ class TencentCloudCaptchaActions{
             $codeAppId = '';
             $codeAppKey = '';
             if ($codeFree == '2') {
-                $codeAppId = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
-                $codeAppKey = esc_attr($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_KEY]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
+                $codeAppId = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_ID]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
+                $codeAppKey = sanitize_text_field($CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_KEY]) ?: $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
             } else {
                 $codeAppId = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID];
                 $codeAppKey = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_APP_KEY];
@@ -530,7 +535,7 @@ class TencentCloudCaptchaActions{
      */
     private static function getSecretID(){
         $tecentCaptchaOptinos = get_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS);
-        if (esc_attr($tecentCaptchaOptinos[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_CUSTOM]) == '2'){
+        if (sanitize_text_field($tecentCaptchaOptinos[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_CUSTOM]) == '2'){
             return $tecentCaptchaOptinos[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_ID];
         }else{
             $commonOptinos = get_option('tencent_wordpress_common_options');
@@ -545,7 +550,7 @@ class TencentCloudCaptchaActions{
      */
     private static function getSecretKey(){
         $tecentCaptchaOptinos = get_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS);
-        if (esc_attr($tecentCaptchaOptinos[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_CUSTOM]) == '2'){
+        if (sanitize_text_field($tecentCaptchaOptinos[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_CUSTOM]) == '2'){
             return $tecentCaptchaOptinos[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_KEY];
         }else{
             $commonOptinos = get_option('tencent_wordpress_common_options');
@@ -588,7 +593,7 @@ class TencentCloudCaptchaActions{
         $plugin = array(
             'plugin_name' => TENCENT_WORDPRESS_CAPTCHA_SHOW_NAME,
             'nick_name' => '腾讯云验证码（CAPTCHA）插件',
-            'plugin_dir' => 'tencentcloud-plugin-captcha/tencentcloud-plugin-captcha.php',
+            'plugin_dir' => 'tencentcloud-captcha/tencentcloud-captcha.php',
             'href' => 'admin.php?page=tencent_wordpress_plugin_captcha',
             'activation' => 'true',
             'status' => 'true',

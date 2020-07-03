@@ -32,7 +32,7 @@ if (!class_exists('TencentWordpressPluginsSettingActions')) {
         //插件未安装
         const ACTIVATION_UNINSTALL = 'false';
         //插件名称前缀
-        const WP_PLUGIN_PREFIX = 'tencentcloud-plugin';
+        const WP_PLUGIN_PREFIX = 'tencentcloud';
 
         /**
          * 初始化函数 单例模式
@@ -87,8 +87,14 @@ if (!class_exists('TencentWordpressPluginsSettingActions')) {
                 }
             }
             if ($exists === false) {
-                add_menu_page('腾讯云设置', '腾讯云设置', 'manage_options', 'TencentWordpressPluginsCommonSettingPage', 'tencent_wordpress_plugin_common_page', 'dashicons-admin-site-alt3');
+                $pagehook = add_menu_page('腾讯云设置', '腾讯云设置', 'manage_options', 'TencentWordpressPluginsCommonSettingPage', 'tencent_wordpress_plugin_common_page', 'dashicons-admin-site-alt3');
+                add_action( 'admin_print_styles-'.$pagehook, array('TencentWordpressPluginsSettingActions', 'tcwpLoadTencentWordpressCss'));
+
             }
+        }
+        public static function tcwpLoadTencentWordpressCss(){
+            wp_enqueue_style('tencentcloud_admin_css',TENCENT_WORDPRESS_PLUGINS_COMMON_CSS_URL.'bootstrap.min.css');
+
         }
 
         /**

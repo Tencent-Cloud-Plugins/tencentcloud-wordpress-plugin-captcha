@@ -38,7 +38,7 @@ $registerCode = esc_attr($codeVerifySettings['register_need_code'])?:'2';
 $loginCode = esc_attr($codeVerifySettings['login_need_code'])?:'2';
 $lostpasswordCode = esc_attr($codeVerifySettings['lostpassword_need_code'])?:'2';
 
-$codeFree = $codeVerifySettings['code_free']?:'1';
+$codeFree = esc_attr($codeVerifySettings['code_free'])?:'1';
 $registerCodeAPPID = esc_attr($codeVerifySettings['captcha_register_app_id'])?:'';
 $registerCodeKey = esc_attr($codeVerifySettings['captcha_register_app_key'])?:'';
 $commentCodeAPPID = esc_attr($codeVerifySettings['captcha_comment_app_id'])?:'';
@@ -46,7 +46,7 @@ $commentCodeKey = esc_attr($codeVerifySettings['captcha_comment_app_key'])?:'';
 $lostpasswordCodeAPPID = esc_attr($codeVerifySettings['captcha_lostpassword_app_id'])?:'';
 $lostpasswordCodeKey = esc_attr($codeVerifySettings['captcha_lostpassword_app_key'])?:'';
    ?>
-    <link rel="stylesheet" href="<?php echo TENCENT_WORDPRESS_CAPTCHA_CSS_DIR.'bootstrap.min.css' ?>">
+
     <style type="text/css">
         .dashicons {
             vertical-align: middle;

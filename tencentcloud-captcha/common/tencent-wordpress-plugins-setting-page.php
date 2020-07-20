@@ -24,7 +24,7 @@ function tencent_wordpress_plugin_common_page() {
     $tencent_plugins = TencentWordpressPluginsSettingActions::getTencentWordpressPluggins();
     ?>
     <!--add style file-->
-        <style>
+    <style>
         .dashicons {
             vertical-align: middle;
             position: relative;
@@ -36,6 +36,13 @@ function tencent_wordpress_plugin_common_page() {
         }
         .plugin-button-close {
             margin-left: 20px;
+        }
+        .lable_padding_left{
+            padding-left:30px
+        }
+        .div_custom_switch_padding_top {
+            padding-top: 15px;
+            padding-left: 75px
         }
     </style>
     <div class="wrap">
@@ -108,17 +115,27 @@ function tencent_wordpress_plugin_common_page() {
                 <!-- Tencent Could Common SecretId and SecretKey Setting Page-->
                 <div class="tab-pane fade" id="tencent_wordpress_secret_home">
                     <br class="my-4">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>为各个腾讯云应用插件配置全局通用的腾讯云密钥，简化插件密钥配置工作</p>
-                        </div>
-                    </div>
                     <div class="postbox">
                         <div class="inside">
                             <div class="row">
                                 <div class="col-lg-9">
                                     <form id="tencent_wordpress_common_secert_info_form" data-ajax-url="<?php echo $ajax_url ?>" name="twpcommomsecret" method="post" class="bs-component">
-
+                                        <!-- Setting Option no_local_file-->
+                                        <div class="row form-group">
+                                            <label class="col-form-label col-lg-2 lable_padding_left" for="inputDefault">开启全局密钥</label>
+                                            <div class="custom-control custom-switch div_custom_switch_padding_top">
+                                                <input name="tencent_wordpress_common_secret" type="checkbox" class="custom-control-input" id="tencent_wordpress_common_secret_checkbox_id"
+                                                    <?php
+                                                    if (isset($tencent_wordpress_common_options)
+                                                        && isset($tencent_wordpress_common_options['site_sec_on'])
+                                                        && $tencent_wordpress_common_options['site_sec_on'] === true) {
+                                                        echo 'checked="true"';
+                                                    }
+                                                    ?>
+                                                >
+                                                <label class="custom-control-label" for="tencent_wordpress_common_secret_checkbox_id">为各个腾讯云应用插件配置全局通用的腾讯云密钥，简化插件密钥配置工作</label>
+                                            </div>
+                                        </div>
                                         <!-- Setting Option SecretId-->
                                         <div class="form-group">
                                             <label class="col-form-label col-lg-2" for="inputDefault">SecretId</label>
@@ -138,6 +155,23 @@ function tencent_wordpress_plugin_common_page() {
                                             <div class="offset-lg-2">
                                                 <p>访问 <a href="https://console.qcloud.com/cam/capi" target="_blank">密钥管理</a>获取
                                                     SecretId和SecretKey或通过"新建密钥"创建密钥串</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Setting Option no_local_file-->
+                                        <div class="row form-group">
+                                            <label class="col-form-label col-lg-2 lable_padding_left" for="inputDefault">参与体验优化项目</label>
+                                            <div class="custom-control custom-switch div_custom_switch_padding_top">
+                                                <input name="customize_optimize_project" type="checkbox" class="custom-control-input" id="customize_optimize_project_checkbox_id"
+                                                    <?php
+                                                    if (isset($tencent_wordpress_common_options)
+                                                        && isset($tencent_wordpress_common_options['site_report_on'])
+                                                        && $tencent_wordpress_common_options['site_report_on'] === true) {
+                                                        echo 'checked="true"';
+                                                    }
+                                                    ?>
+                                                >
+                                                <label class="custom-control-label" for="customize_optimize_project_checkbox_id">允许腾讯云采集必要的插件启用数据用于优化提升产品体验</label>
                                             </div>
                                         </div>
                                     </form>
@@ -198,8 +232,21 @@ function tencent_wordpress_plugin_common_page() {
 
             var ajaxUrl = $("#tencent_wordpress_common_secert_info_form").data("ajax-url");
             $('#button_twp_common_secret_save').click(function () {
-                var secret_id = $('#input_twp_common_secret_id')[0].value;
-                var secret_key = $('#input_twp_common_secret_key')[0].value;
+                var secret_id = $('#input_twp_common_secret_id').val();
+                var secret_key = $('#input_twp_common_secret_key').val();
+                var site_secret_on
+                var site_report_on
+                if ($('#tencent_wordpress_common_secret_checkbox_id').get(0).checked === false) {
+                    site_secret_on = false;
+                } else {
+                    site_secret_on = true;
+                }
+
+                if ($('#customize_optimize_project_checkbox_id').get(0).checked === false) {
+                    site_report_on = false;
+                } else {
+                    site_report_on = true;
+                }
 
                 if (!secret_key || !secret_id) {
                     alert("SecretId、SecretKey的值都不能为空！");
@@ -213,7 +260,9 @@ function tencent_wordpress_plugin_common_page() {
                     data: {
                         action: "save_tencent_wordpress_common_options",
                         secret_id: secret_id,
-                        secret_key:secret_key
+                        secret_key:secret_key,
+                        site_secret_on:site_secret_on,
+                        site_report_on:site_report_on
                     },
                     success: function(response) {
                         if (response.success){

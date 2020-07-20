@@ -1,6 +1,6 @@
 === 腾讯云验证码 （CAPTCHA） ===
 
-Contributors: chachuang
+Contributors: Tencent
 Donate link: https://www.tencent.com/
 Tags:腾讯云CAPTCHA,腾讯云验证码,腾讯云,验证码
 Requires at least: 4.5.0
@@ -37,6 +37,10 @@ License URI:http://www.apache.org/licenses/LICENSE-2.0
 == Screenshots ==
 
 1. screenshot-1.png
+2. screenshot-2.png
+3. screenshot-3.png
+4. screenshot-4.png
+5. screenshot-5.png
 
 == Changelog ==
 

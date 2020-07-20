@@ -46,6 +46,7 @@ class TencentCloudCaptchaActions{
     const TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_KEY = 'captcha_comment_app_key';
     const TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_KEY = 'captcha_lostpassword_app_key';
     const TENCENT_WORDPRESS_CAPTCHA_SECRET_CUSTOM = 'secret_custom';
+    const TENCENT_WORDPRESS_CAPTCHA_PLUGIN_TYPE = 'captcha';
 
 
 
@@ -160,7 +161,7 @@ class TencentCloudCaptchaActions{
      * 插件菜单设置
      */
     public function tencent_wordpress_captcha_pluginSettingPage(){
-        TencentWordpressPluginsSettingActions::tcwpAddTencentWordpressCommonSettingPage();
+        TencentWordpressPluginsSettingActions::AddTencentWordpressCommonSettingPage();
         $pagehook = add_submenu_page('TencentWordpressPluginsCommonSettingPage','验证码','验证码', 'manage_options', 'tencent_wordpress_plugin_captcha', array('TencentCloudCaptchaActions', 'tencent_wordpress_captcha_SettingPage'));
         add_action( 'admin_print_styles-'.$pagehook, array(new TencentCloudCaptchaActions(), 'tencent_wordpress_captcha_loadCssForPage'));
     }
@@ -310,6 +311,9 @@ class TencentCloudCaptchaActions{
             wp_send_json_error(array('msg' => $checkResult));
         }
         update_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS, $CodeVerifySettings, true);
+        //发送用户体验数据
+        $static_data = self::getTencentCloudWordPressStaticData('save_config');
+        TencentWordpressPluginsSettingActions::sendUserExperienceInfo($static_data);
         wp_send_json_success(array('msg' => '保存成功'));
 
     }
@@ -600,6 +604,12 @@ class TencentCloudCaptchaActions{
             'download_url' => ''
         );
         TencentWordpressPluginsSettingActions::prepareTencentWordressPluginsDB($plugin);
+
+        // 第一次开启插件则生成一个全站唯一的站点id，保存在公共的option中
+        TencentWordpressPluginsSettingActions::setWordPressSiteID();
+        //发送用户体验数据
+        $static_data = self::getTencentCloudWordPressStaticData('activate','','','','');
+        TencentWordpressPluginsSettingActions::sendUserExperienceInfo($static_data);
     }
 
     /**
@@ -612,7 +622,8 @@ class TencentCloudCaptchaActions{
             update_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS, $tencent_wordpress_captcha_options);
         }
         TencentWordpressPluginsSettingActions::disableTencentWordpressPlugin(TENCENT_WORDPRESS_CAPTCHA_SHOW_NAME);
-
+        $static_data = self::getTencentCloudWordPressStaticData('deactivate','','','','');
+        TencentWordpressPluginsSettingActions::sendUserExperienceInfo($static_data);
     }
 
     /**
@@ -624,6 +635,42 @@ class TencentCloudCaptchaActions{
         }
 
     }
+
+    public static function getTencentCloudWordPressStaticData($action)
+    {
+        $site_id = TencentWordpressPluginsSettingActions::getWordPressSiteID();
+        $site_url = TencentWordpressPluginsSettingActions::getWordPressSiteUrl();
+        $site_app = TencentWordpressPluginsSettingActions::getWordPressSiteApp();
+        $static_data['action'] = $action;
+        $static_data['plugin_type'] = 'captcha';
+        $static_data['data'] = array(
+            'site_id'  => $site_id,
+            'site_url' => $site_url,
+            'site_app' => $site_app
+        );
+
+        $common_option = get_option(TENCENT_WORDPRESS_COMMON_OPTIONS);
+        $tencent_wordpress_captcha_options = get_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS);
+        if ($tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_CUSTOM] == '2' && isset($tencent_wordpress_captcha_options['secret_id']) && isset($tencent_wordpress_captcha_options['secret_key'])) {
+            $secret_id = $tencent_wordpress_captcha_options['secret_id'];
+            $secret_key = $tencent_wordpress_captcha_options['secret_key'];
+        } elseif ($common_option['site_report_on'] === true && isset($common_option['secret_id']) && isset($common_option['secret_key'])) {
+            $secret_id = $common_option['secret_id'];
+            $secret_key = $common_option['secret_key'];
+        }
+        $static_data['data']['uin'] = TencentWordpressPluginsSettingActions::getUserUinBySecret($secret_id, $secret_key);
+
+        $static_data['data']['cust_sec_on'] = $tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_SECRET_CUSTOM] == '2' ? 1 : 2;
+       $others =array(
+            'captcha_appid' => $tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_APP_ID],
+            'captcha_appid_login' => $tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_REGISTER_APP_ID],
+            'captcha_appid_comment' => $tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_APP_ID],
+            'captcha_appid_pwd' => $tencent_wordpress_captcha_options[self::TENCENT_WORDPRESS_CAPTCHA_LOSTPASSWORD_APP_ID],
+        );
+        $static_data['data']['others'] = json_encode($others);
+        return $static_data;
+    }
+
 
 }
 

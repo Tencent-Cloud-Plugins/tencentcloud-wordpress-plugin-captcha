@@ -85,7 +85,7 @@ $lostpasswordCodeKey = esc_attr($codeVerifySettings['captcha_lostpassword_app_ke
                                     <table class="form-table">
                                         <tbody>
                                         <tr>
-                                            <th scope="row"><label>自定义密钥</label></th>
+                                            <th scope="row"><label><h5>自定义密钥</h5></label></th>
                                             <td>
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input" id="codeVerify-option-secret-custom" value="<?php echo $secretCustom; ?>" <?php if ($secretCustom === '2') {echo 'checked';} ?>>
@@ -94,16 +94,16 @@ $lostpasswordCodeKey = esc_attr($codeVerifySettings['captcha_lostpassword_app_ke
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row"><label for="codeVerify-option-secret-id">SecretId</label></th>
+                                            <th scope="row"><label for="codeVerify-option-secret-id"><h5>SecretId</h5></label></th>
                                             <td><input type="password" autocomplete="off" value="<?php echo $secretID; ?>"
-                                                       id="codeVerify-option-secret-id" size="50" disabled ="<?php if ($secretCustom == '1') {echo 'disabled';} ?>">
+                                                       id="codeVerify-option-secret-id" size="50" <?php if ($secretCustom == '1') {echo 'disabled ="disabled"';} ?>>
                                                 <span id="codeVerify_secret_id_type_exchange" class="dashicons dashicons-hidden"></span></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row"><label for="codeVerify-option-secret-key">SecretKey</label></th>
+                                            <th scope="row"><label for="codeVerify-option-secret-key"><h5>SecretKey</h5></label></th>
                                             <td><input type="password" autocomplete="off"
                                                        value="<?php echo $secretKey; ?>"
-                                                       id="codeVerify-option-secret-key" size="50" disabled ="<?php if ($secretCustom == '1') {echo 'disabled';} ?>">
+                                                       id="codeVerify-option-secret-key" size="50" <?php if ($secretCustom == '1') {echo 'disabled ="disabled"';} ?>>
                                                 <span id="codeVerify_secret_key_type_exchange" class="dashicons dashicons-hidden"></span>
                                                 <p class="description">访问 <a href="https://console.qcloud.com/cam/capi" target="_blank">密钥管理</a>获取
                                                     SecretId和SecretKey或通过"新建密钥"创建密钥串</p>
@@ -112,13 +112,13 @@ $lostpasswordCodeKey = esc_attr($codeVerifySettings['captcha_lostpassword_app_ke
 
 
                                         <tr>
-                                            <th scope="row"><label for="codeVerify-option_codeAppId">CaptchaAppId</label></th>
+                                            <th scope="row"><label for="codeVerify-option_codeAppId"><h5>CaptchaAppId</h5></label></th>
                                             <td><input type="text" name="codeVerify-option_codeAppId" autocomplete="off" value="<?php echo $codeAppId; ?>"
                                                        id="codeVerify-option_codeAppId" size="30">
                                                 <p class="description">验证码通用的AppId</p></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row"><label for="codeVerify-option_codeSecretKey">CaptchaAppSecretKey</label></th>
+                                            <th scope="row"><label for="codeVerify-option_codeSecretKey"><h5>CaptchaAppSecretKey</h5></label></th>
                                             <td><input type="password" name="codeVerify-option_codeSecretKey" autocomplete="off" value="<?php echo $codeSecretKey; ?>"
                                                        id="codeVerify-option_codeSecretKey" size="30">
                                                 <p class="description">访问<a href="https://console.cloud.tencent.com/captcha" target="_blank">CaptchaAppId列表</a>获取

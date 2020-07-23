@@ -20,11 +20,13 @@ if(!defined('WP_UNINSTALL_PLUGIN')){
 defined('TENCENT_WORDPRESS_PLUGINS_COMMON_DIR') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_DIR', plugin_dir_path(__FILE__)  . 'common' . DIRECTORY_SEPARATOR);
 require_once TENCENT_WORDPRESS_PLUGINS_COMMON_DIR . 'TencentWordpressPluginsSettingActions.php';
 defined('TENCENT_WORDPRESS_PLUGINS_SHOW_NAME')||define( 'TENCENT_WORDPRESS_PLUGINS_SHOW_NAME', 'tencentcloud-plugin-captcha');
+defined('TENCENT_WORDPRESS_CAPTCHA_DIR')||define( 'TENCENT_WORDPRESS_CAPTCHA_DIR', plugin_dir_path( __FILE__ ) );
+require_once TENCENT_WORDPRESS_CAPTCHA_DIR . 'TencentCloudCaptchaActions.php';
 //删除公共配置中本插件的信息
 TencentWordpressPluginsSettingActions::deleteTencentWordpressPlugin(TENCENT_WORDPRESS_PLUGINS_SHOW_NAME);
 //获取到插件的配置信息，如果存在则删除
 if (get_option('tencent_wordpress_captcha_options')) {
     delete_option( 'tencent_wordpress_captcha_options' );
 }
-$static_data = TencentCloudCaptchaActions::getTencentCloudWordPressStaticData('deactivate','','','','');
-TencentWordpressPluginsSettingActions::tcwpSendUserExperienceInfo($static_data);
+$static_data = TencentCloudCaptchaActions::getTencentCloudWordPressStaticData('deactivate');
+TencentWordpressPluginsSettingActions::SendUserExperienceInfo($static_data);

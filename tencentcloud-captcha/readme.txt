@@ -2,7 +2,7 @@
 
 Contributors: Tencent
 Donate link: https://www.tencent.com/
-Tags:腾讯云CAPTCHA,腾讯云验证码,腾讯云,验证码
+Tags:tencent,tencentcloud,qcloud,春雨,腾讯云CAPTCHA,腾讯云验证码,腾讯云,验证码
 Requires at least: 4.5.0
 Tested up to: 5.4.1
 Stable tag: 1.1
@@ -21,13 +21,15 @@ License URI:http://www.apache.org/licenses/LICENSE-2.0
 * 4、支持忘记密码表单增加验证码；
 * 5、支持场景自定义
 
+本项目由腾讯云中小企业产品中心建设和维护，了解与该插件使用相关的更多信息，请访问[春雨文档中心](https://openapp.qq.com/docs/Wordpress/captcha.html)
+
+请通过[咨询建议](https://txc.qq.com/)向我们提交宝贵意见。
 
 == Installation ==
 
 * 1、把tencentcloud-captcha文件夹上传到/wp-content/plugins/目录下<br />
 * 2、在后台插件列表中激活腾讯云验证码插件<br />
 * 3、在"设置""菜单中输入腾讯云验证码相关参数信息<br />
-* 4、设置可以参考：https://www.tenxun.com/2196.html
 
 == Frequently Asked Questions ==
 

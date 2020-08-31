@@ -25,15 +25,15 @@
 define( 'TENCENT_WORDPRESS_CAPTCHA_VERSION', 1.0 );
 define( 'TENCENT_WORDPRESS_CAPTCHA_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TENCNET_WORDPRESS_CAPTCHA_BASENAME', plugin_basename(__FILE__) );
-define( 'TENCENT_WORDPRESS_CAPTCHA_JS_DIR', plugins_url( 'tencentcloud-captcha' ) . DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR );
-define( 'TENCENT_WORDPRESS_CAPTCHA_CSS_DIR', plugins_url( 'tencentcloud-captcha' ) . DIRECTORY_SEPARATOR.'css'.DIRECTORY_SEPARATOR );
+define( 'TENCENT_WORDPRESS_CAPTCHA_JS_DIR', plugins_url( 'tencentcloud-captcha' ) . '/' . 'js' . '/' );
+define( 'TENCENT_WORDPRESS_CAPTCHA_CSS_DIR', plugins_url( 'tencentcloud-captcha' ) . '/'.'css'.'/' );
 define( 'TENCENT_WORDPRESS_CAPTCHA_NAME', 'tencentcloud-captcha');
 define( 'TENCENT_WORDPRESS_CAPTCHA_SHOW_NAME', 'tencentcloud-captcha');
 defined('TENCENT_WORDPRESS_CAPTCHA_URL') or define('TENCENT_WORDPRESS_CAPTCHA_URL', plugins_url(TENCENT_WORDPRESS_CAPTCHA_NAME) . DIRECTORY_SEPARATOR);
 
 defined('TENCENT_WORDPRESS_PLUGINS_COMMON_URL') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_URL', TENCENT_WORDPRESS_CAPTCHA_URL . 'common' . DIRECTORY_SEPARATOR);
 defined('TENCENT_WORDPRESS_PLUGINS_COMMON_CSS_URL') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_CSS_URL', TENCENT_WORDPRESS_PLUGINS_COMMON_URL . 'css' . DIRECTORY_SEPARATOR);
-defined('TENCENT_WORDPRESS_PLUGINS_COMMON_DIR') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_DIR', TENCENT_WORDPRESS_CAPTCHA_DIR . 'common' . DIRECTORY_SEPARATOR);
+defined('TENCENT_WORDPRESS_PLUGINS_COMMON_DIR') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_DIR', TENCENT_WORDPRESS_CAPTCHA_DIR . 'common' . '/');
 
 require_once 'TencentCloudCaptchaActions.php';
 $TecentWordpressCaptchaActions = new TencentCloudCaptchaActions();
@@ -70,6 +70,7 @@ add_action('wp_ajax_update_codeVerify_settings', array($TecentWordpressCaptchaAc
 add_action( 'admin_enqueue_scripts', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_loadMyScriptEnqueue'));
 add_action( 'login_enqueue_scripts', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_loadMyScriptEnqueue'));
 add_action( 'wp_enqueue_scripts', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_loadScriptForPage'));
+add_action( 'comment_form_before', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_loadMyScriptEnqueue'));
 
 //插件中心初始化
 add_action( 'init', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_init'));

@@ -70,6 +70,6 @@ add_action('wp_ajax_update_codeVerify_settings', array($TecentWordpressCaptchaAc
 add_action( 'admin_enqueue_scripts', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_loadMyScriptEnqueue'));
 add_action( 'login_enqueue_scripts', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_loadMyScriptEnqueue'));
 add_action( 'wp_enqueue_scripts', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_loadScriptForPage'));
-
+add_action( 'comment_form_before', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_loadMyScriptEnqueue'));
 //插件中心初始化
 add_action( 'init', array($TecentWordpressCaptchaActions, 'tencent_wordpress_captcha_init'));

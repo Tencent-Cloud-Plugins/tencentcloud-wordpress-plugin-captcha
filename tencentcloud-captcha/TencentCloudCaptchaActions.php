@@ -460,6 +460,12 @@ class TencentCloudCaptchaActions{
      * @return mixed
      */
     public function tencent_wordpress_captcha_commentCodeVerify($comment){
+        $user = wp_get_current_user();
+        // 管理员后台回复评论时无需验证
+        $allowed_roles = array('editor', 'administrator', 'author');
+        if(array_intersect($allowed_roles, $user->roles ) ) {
+            return $comment;
+        }
         $CodeVerifyOptions = get_option(self::TENCENT_WORDPRESS_CAPTCHA_OPTIONS);
         $commentNeedCode = $CodeVerifyOptions[self::TENCENT_WORDPRESS_CAPTCHA_COMMENT_NEED_CODE];
         if ($commentNeedCode == '2') {

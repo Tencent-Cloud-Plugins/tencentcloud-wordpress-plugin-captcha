@@ -1,11 +1,10 @@
 === 腾讯云验证码 （CAPTCHA） ===
 
 Contributors: Tencent
-Donate link: https://www.tencent.com/
 Tags:tencent,tencentcloud,qcloud,春雨,腾讯云CAPTCHA,腾讯云验证码,腾讯云,验证码
-Requires at least: 4.5.0
+Requires at least: 5.0
 Tested up to: 5.4.1
-Stable tag: 1.1
+Stable tag: 1.0.1
 License:Apache 2.0
 License URI:http://www.apache.org/licenses/LICENSE-2.0
 
@@ -46,9 +45,12 @@ License URI:http://www.apache.org/licenses/LICENSE-2.0
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.0 =
 * 1、支持登录表单增加验证码；
 * 2、支持注册表单增加验证码；
 * 3、支持评论表单增加验证码；
 * 4、支持忘记密码表单增加验证码；
 * 5、支持场景自定义
+
+= 1.0.1 =
+* 1、支持在windows环境下运行

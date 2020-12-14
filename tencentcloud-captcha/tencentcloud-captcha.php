@@ -3,7 +3,7 @@
  * Plugin Name: tencentcloud-captcha
  * Plugin URI:  https://wordpress.org/plugins/tencentcloud-captcha
  * Description: 通过腾讯云验证码提供立体、全面的人机验证。
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: 腾讯云
  * Author URI: https://www.tencent.com/
  * Copyright (C) 2020 Tencent Cloud.
@@ -22,17 +22,17 @@
  */
 
 
-define( 'TENCENT_WORDPRESS_CAPTCHA_VERSION', 1.0 );
+define( 'TENCENT_WORDPRESS_CAPTCHA_VERSION', '1.0.1' );
 define( 'TENCENT_WORDPRESS_CAPTCHA_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TENCNET_WORDPRESS_CAPTCHA_BASENAME', plugin_basename(__FILE__) );
 define( 'TENCENT_WORDPRESS_CAPTCHA_JS_DIR', plugins_url( 'tencentcloud-captcha' ) . '/' . 'js' . '/' );
-define( 'TENCENT_WORDPRESS_CAPTCHA_CSS_DIR', plugins_url( 'tencentcloud-captcha' ) . '/'.'css'.'/' );
+define( 'TENCENT_WORDPRESS_CAPTCHA_CSS_DIR', plugins_url( 'tencentcloud-captcha' ) . '/' . 'css' . '/' );
 define( 'TENCENT_WORDPRESS_CAPTCHA_NAME', 'tencentcloud-captcha');
 define( 'TENCENT_WORDPRESS_CAPTCHA_SHOW_NAME', 'tencentcloud-captcha');
-defined('TENCENT_WORDPRESS_CAPTCHA_URL') or define('TENCENT_WORDPRESS_CAPTCHA_URL', plugins_url(TENCENT_WORDPRESS_CAPTCHA_NAME) . DIRECTORY_SEPARATOR);
+defined('TENCENT_WORDPRESS_CAPTCHA_URL') or define('TENCENT_WORDPRESS_CAPTCHA_URL', plugins_url(TENCENT_WORDPRESS_CAPTCHA_NAME) . '/');
 
-defined('TENCENT_WORDPRESS_PLUGINS_COMMON_URL') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_URL', TENCENT_WORDPRESS_CAPTCHA_URL . 'common' . DIRECTORY_SEPARATOR);
-defined('TENCENT_WORDPRESS_PLUGINS_COMMON_CSS_URL') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_CSS_URL', TENCENT_WORDPRESS_PLUGINS_COMMON_URL . 'css' . DIRECTORY_SEPARATOR);
+defined('TENCENT_WORDPRESS_PLUGINS_COMMON_URL') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_URL', TENCENT_WORDPRESS_CAPTCHA_URL . 'common' . '/');
+defined('TENCENT_WORDPRESS_PLUGINS_COMMON_CSS_URL') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_CSS_URL', TENCENT_WORDPRESS_PLUGINS_COMMON_URL . 'css' . '/');
 defined('TENCENT_WORDPRESS_PLUGINS_COMMON_DIR') or define('TENCENT_WORDPRESS_PLUGINS_COMMON_DIR', TENCENT_WORDPRESS_CAPTCHA_DIR . 'common' . '/');
 
 require_once 'TencentCloudCaptchaActions.php';

@@ -8,7 +8,7 @@
 | ---------- | ------------------------------------------------------------ |
 | 中文名称   | 腾讯云验证码（CAPTCHA）插件                                  |
 | 英文名称   | tencentcloud-captcha                                         |
-| 最新版本   | v1.0.1 (2020.12.11)                                          |
+| 最新版本   | v1.0.2 (2021.8.20)                                          |
 | 适用平台   | [WordPress](https://wordpress.org/)                          |
 | 适用产品   | [腾讯云验证码](https://cloud.tencent.com/document/product/1110/36334) |
 | GitHub项目 | [tencentcloud-wordpress-plugin-captcha](https://github.com/Tencent-Cloud-Plugins/tencentcloud-wordpress-plugin-captcha) |
@@ -30,7 +30,9 @@
 
 - 支持找回密码表单增加验证码
 
-  
+- 支持配置页面验证码测试功能
+
+- 支持本地调试日志功能
 
 ## 3.安装指引
 
@@ -80,7 +82,9 @@
 
 > 评论页面开启验证码效果。
 
-
+![](./images/captcha6.png)
+ 
+ > 配置页面测试验证码功能，并提供本地调试日志功能。
 
 ### 4.2. 名词解释
 
@@ -106,7 +110,10 @@
 
 
 ## 7.GitHub版本迭代记录
-
+### 2021.8.20 tencentcloud-wordpress-plugin-captcha v1.0.2
+- 支持PHP8并兼容WordPress5.8
+- 支持配置页面进行验证码测试
+- 新增本地调试日志功能
 
 ### 2020.12.11 tencentcloud-wordpress-plugin-captcha v1.0.1
 - 支持在windows环境下运行

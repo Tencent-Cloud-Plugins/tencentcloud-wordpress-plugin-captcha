@@ -35,6 +35,4 @@ jQuery(function ($) {
         //显示验证码
         captcha1.show();
     });
-
-
 });

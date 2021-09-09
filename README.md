@@ -119,6 +119,7 @@
 - 支持在windows环境下运行
 
 ### 2020.6.23 tencentcloud-wordpress-plugin-captcha v1.0.0
+
 - 支持在注册表单中增加验证码
 - 支持在评论表单中增加验证码
 - 支持用户自定义业务场景

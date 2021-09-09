@@ -36,6 +36,7 @@ jQuery(function ($) {
       var loginCode = $("#codeVerify-option-login").is(":checked")?2:1;;
       var lostpasswordCode = $("#codeVerify-option-lostpassword").is(":checked")?2:1;;
 
+      var debugCode = $("#codeVerify-option-debug").is(":checked")?2:1;;
       var codeFree = $("#codeVerify-option-codeFree").is(":checked")?2:1;;
 
       var registerCodeAppId = $("#codeVerify_option_registerAPPID").val();
@@ -60,6 +61,7 @@ jQuery(function ($) {
             commentNeedCode: commentCode,
             loginNeedCode:loginCode,
             lostpasswordNeedCode:lostpasswordCode,
+            debugNeedCode:debugCode,
             codeFree: codeFree,
             registerCodeAppId: registerCodeAppId,
             registerCodeKey: registerCodeKey,
@@ -78,6 +80,66 @@ jQuery(function ($) {
          }
       });
    });
+
+   //验证码测试按钮的点击事件
+   $('#codeVerifyButtonCheck').click(function () {
+      //重置ticket和随机字符串的值
+      $('#codeVerifyTicketCheck').val('');
+      $('#codeVerifyRandstrCheck').val('');
+      //初始化验证码
+      var captcha1 = new TencentCaptcha($('#codeVerifyButtonCheck').attr('data-appid'), function (res) {
+         //判断是否验证成功
+         if (res.ret == 0) {
+            //将返回的ticket赋值给表单
+            $('#codeVerifyTicketCheck').val(res.ticket);
+            $('#codeVerifyRandstrCheck').val(res.randstr);
+            //隐藏验证按钮
+            $('#codeVerifyButtonCheck').hide();
+            //展示通过按钮
+            $('#codePassButtonNext').show();
+         }
+      });
+      //显示验证码
+      captcha1.show();
+   });
+
+   $('#codePassButtonNext').click(function () {
+      var codeVerifyTicketCheck = $("#codeVerifyTicketCheck").val();
+      var codeVerifyRandstrCheck = $("#codeVerifyRandstrCheck").val();
+      var codeAppId = $("#codeVerify-option_codeAppId").val();
+      var codeSecretKey = $("#codeVerify-option_codeSecretKey").val();
+
+      $.ajax({
+         type: "post",
+         url: ajaxUrl,
+         dataType:"json",
+         data: {
+            action: "codeVerify_check",
+            codeVerifyTicketCheck:codeVerifyTicketCheck,
+            codeVerifyRandstrCheck: codeVerifyRandstrCheck,
+            codeAppId: codeAppId,
+            codeSecretKey: codeSecretKey
+         },
+         success: function(response) {
+            console.log(response);
+            if (response.success === true) {
+               //隐藏验证按钮
+               $('#codePassButtonNext').hide();
+               //展示通过按钮
+               $('#codePassButtonOk').show();
+            } else {
+               //隐藏验证按钮
+               $('#codePassButtonNext').hide();
+               //展示通过按钮
+               $('#codeVerifyButtonCheck').show();
+               $('#span_captch_verify')[0].innerHTML = response.data.msg;
+            }
+
+         }
+      });
+   });
+
+
    //展示异步返回消息
    function showAjaxReturnMsg(msg,success) {
       var parent = $('#codeVerify_show-ajax-return-msg').parent();
@@ -137,4 +199,30 @@ jQuery(function ($) {
          span_eye.addClass('shicons-hiddenda').removeClass('dashicons-visibility');
       }
    }
+
+   $('#button_delete_logfile').click(function () {
+      $.ajax({
+         type: "post",
+         url: ajaxUrl,
+         dataType: "json",
+         data: {
+            action: "delete_captcha_logfile"
+         },
+         success: function (response) {
+            if (response.success) {
+               $('#span_delete_logfile')[0].innerHTML = "删除成功！";
+               $('#span_delete_logfile').show().delay(5000).fadeOut();
+            }
+         }
+      });
+   });
+
+   $('#codeVerify-option-debug').change(function () {
+      if ($('#codeVerify-option-debug')[0].checked) {
+         $('#tr_delete_logfile').css('display', '');
+      } else {
+         $('#tr_delete_logfile').css('display', 'none');
+      }
+   });
+
 });

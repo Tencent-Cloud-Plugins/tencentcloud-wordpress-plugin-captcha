@@ -2,9 +2,9 @@
 
 Contributors: Tencent
 Tags:tencent,tencentcloud,qcloud,春雨,腾讯云CAPTCHA,腾讯云验证码,腾讯云,验证码
-Requires at least: 5.0
-Tested up to: 5.4.1
-Stable tag: 1.0.1
+Requires at least: 5.5
+Tested up to: 5.8
+Stable tag: 1.0.2
 License:Apache 2.0
 License URI:http://www.apache.org/licenses/LICENSE-2.0
 
@@ -33,8 +33,6 @@ License URI:http://www.apache.org/licenses/LICENSE-2.0
 == Frequently Asked Questions ==
 
 * 1.当发现插件出错时，开启调试获取错误信息。
-
-
 == Screenshots ==
 
 1. screenshot-1.png
@@ -44,6 +42,13 @@ License URI:http://www.apache.org/licenses/LICENSE-2.0
 5. screenshot-5.png
 
 == Changelog ==
+= 1.0.2 =
+* 1、最高支持PHP8版本，并兼容WordPress5.8
+* 2、新增本地调试日志功能
+* 3、配置页面新增验证码测试功能
+
+= 1.0.1 =
+* 1、支持在windows环境下运行
 
 = 1.0.0 =
 * 1、支持登录表单增加验证码；
@@ -51,6 +56,3 @@ License URI:http://www.apache.org/licenses/LICENSE-2.0
 * 3、支持评论表单增加验证码；
 * 4、支持忘记密码表单增加验证码；
 * 5、支持场景自定义
-
-= 1.0.1 =
-* 1、支持在windows环境下运行
